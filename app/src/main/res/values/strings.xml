@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GuessStar</string>
+    <string name="celebrity_photo">Фото знавменитости</string>
+</resources>
