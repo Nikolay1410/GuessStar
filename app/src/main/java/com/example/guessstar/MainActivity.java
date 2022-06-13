@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
-
     private static class DownloadContentTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -159,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
         @Override
         protected Bitmap doInBackground(String... strings) {

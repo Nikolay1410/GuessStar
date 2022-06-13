@@ -81,7 +81,6 @@
         android:id="@+id/textViewTItle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:selectAllOnFocus="false"
         android:text="@string/guess_star"
         android:textColor="@color/white"
