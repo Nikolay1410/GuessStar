@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,43 +20,47 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-    private Button button0;
-    private Button button1;
-    private Button button2;
-    private Button button3;
     private ImageView imageViewStar;
-
-    private String url = "https://forbes.kz//process/expertise/100_samyih_vliyatelnyih_znamenitostey_po_versii_forbes/";
 
     private ArrayList<String> urls;
     private ArrayList<String> names;
+    private ArrayList<Button> buttons;
+
+    private int numberOfQuestion;
+    private int numberOfRightAnswer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button0 = findViewById(R.id.button0);
-        button1 = findViewById(R.id.button1);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
+        Button button0 = findViewById(R.id.button0);
+        Button button1 = findViewById(R.id.button1);
+        Button button2 = findViewById(R.id.button2);
+        Button button3 = findViewById(R.id.button3);
+        buttons = new ArrayList<>();
+        buttons.add(button0);
+        buttons.add(button1);
+        buttons.add(button2);
+        buttons.add(button3);
         imageViewStar = findViewById(R.id.imageViewStar);
         urls = new ArrayList<>();
         names = new ArrayList<>();
-
         getContent();
-
+        playGame();
     }
     private void getContent(){
         DownloadContentTask task = new DownloadContentTask();
         try {
+            String url = "https://forbes.kz//process/expertise/100_samyih_vliyatelnyih_znamenitostey_po_versii_forbes/";
             String content = task.execute(url).get();
-            String start = "<div class=\"inner-news\">";
-            String finish = "<a class=\"social-follow";
+            String start = "<a href=\"//forbes.kz/img/articles/9f585efd1f4e2236b6eaf5bfcd66ae41-big.jpg\" rel=\"lightbox-article\">";
+            String finish = "<a class=\"social-follow\" href=\"https";
             Pattern pattern = Pattern.compile(start+"(.*?)"+finish);
             Matcher matcher = pattern.matcher(content);
             String splitContent = "";
@@ -67,30 +73,64 @@ public class MainActivity extends AppCompatActivity {
             Matcher matcherImg = patternImg.matcher(splitContent);
             Matcher matcherName = patternName.matcher(splitContent);
             while (matcherImg.find()){
-                urls.add(matcherImg.group(1));
+                String ur = "https:";
+                urls.add(ur+matcherImg.group(1));
             }
             while (matcherName.find()){
-                Pattern patternIm = Pattern.compile("a+?");
-                Matcher matcherIm = patternIm.matcher("10. Мадонна Руш&hjg");
-                String img = matcherIm.group();
-                    while (matcherIm.find()) {
-                        Log.i("kkk", img);
-                    }
+                String str = "(\\d+\\.|&nbsp;|&laquo;|&raquo;)";
+                String strName = Objects.requireNonNull(matcherName.group(1)).replaceAll(str,"");
+                names.add(strName);
             }
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
+
     private void playGame() {
-
+        generateQuestions();
+        DownloadImageTask task = new DownloadImageTask();
+        try {
+            Bitmap bitmap = task.execute(urls.get(numberOfQuestion)).get();
+            if(bitmap!=null){
+                imageViewStar.setImageBitmap(bitmap);
+                for(int i=0; i<buttons.size(); i++){
+                    if(i == numberOfRightAnswer){
+                        buttons.get(i).setText(names.get(numberOfQuestion));
+                    }else {
+                        int wrongAnswer = generateWrongAnswer();
+                        buttons.get(i).setText(names.get(wrongAnswer));
+                    }
+                }
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+//Generating a question
+    private void generateQuestions() {
+        numberOfQuestion = (int) (Math.random()*names.size());
+        numberOfRightAnswer = (int) (Math.random()*buttons.size());
+        }
+//Generating wrong answers
+    private int generateWrongAnswer(){
+        return (int) (Math.random()*names.size());
     }
 
-    private void generateMyCards() {
-
+    public void onClickAnswer(View view) {
+        playGame();
+        Button button = (Button) view;
+        String tag = button.getTag().toString();
+        if(Integer.parseInt(tag) == numberOfRightAnswer){
+            Toast toast = Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }else {
+            Toast toast = Toast.makeText(this, "Неверно. Правильный ответ: "+names.get(numberOfQuestion), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
+    }
+
     private static class DownloadContentTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -109,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
                     line = reader.readLine();
                 }
                 return result.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -132,10 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 url = new URL(strings[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                return bitmap;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                return BitmapFactory.decodeStream(inputStream);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
