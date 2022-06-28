@@ -3,4 +3,7 @@
     <string name="celebrity_photo">Фото знавменитости</string>
     <string name="fon">Fon</string>
     <string name="guess_star">Угадай звезду!</string>
+    <string name="star_game">Начать игру</string>
+    <string name="guess_star_text">Guess star</string>
+    <string name="restart_game">Начть заново</string>
 </resources>

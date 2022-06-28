@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textAlignment="center"
-    tools:context=".MainActivity">
+    tools:context=".ResultGame">
 
     <ImageView
         android:id="@+id/imageViewFon"
@@ -20,37 +19,27 @@
         app:srcCompat="@drawable/fon"
         android:contentDescription="@string/fon" />
 
-
     <TextView
-        android:id="@+id/textViewTitleGame"
+        android:id="@+id/textViewResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:selectAllOnFocus="false"
-        android:text="@string/guess_star_text"
+        android:textSize="26sp"
+        android:textColor="@color/white"
         android:textAlignment="center"
-        android:textColor="@color/purple_700"
-        android:textSize="54sp"
-        android:textStyle="bold"
-        android:layout_margin="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <Button
-        android:id="@+id/buttonPlayGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/star_game"
-        android:textSize="32sp"
-        android:layout_margin="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitleGame" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonStartNewGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/restart_game"
+        android:textSize="24sp"
+        android:onClick="onClickRestart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewResult" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
