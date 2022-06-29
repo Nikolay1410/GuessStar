@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +46,21 @@ public class PlayGame extends AppCompatActivity {
     private int countOfRightAnswer = 0;
 
     private boolean gameOver = false;
+
+    boolean exit = true;
+
+    private static long back_pressed;
+
+    @Override
+    public void onBackPressed() {
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            exit = false;
+        } else
+            Toast.makeText(getBaseContext(), "Если хотите выйти нажмите кнопку дважды",
+                    Toast.LENGTH_SHORT).show();
+        back_pressed = System.currentTimeMillis();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,18 +93,23 @@ public class PlayGame extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                gameOver = true;
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                int max = preferences.getInt("max", 0);
-                if (countOfRightAnswer >= max){
-                    preferences.edit().putInt("max", countOfRightAnswer).apply();
+                if (exit) {
+                    gameOver = true;
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    int max = preferences.getInt("max", 0);
+                    if (countOfRightAnswer >= max) {
+                        preferences.edit().putInt("max", countOfRightAnswer).apply();
+                    }
+                    Intent intent = new Intent(PlayGame.this, ResultGame.class);
+                    intent.putExtra("result", countOfRightAnswer);
+                    startActivity(intent);
+                    finishAndRemoveTask();
                 }
-                Intent intent = new Intent(PlayGame.this, ResultGame.class);
-                intent.putExtra("result", countOfRightAnswer);
-                startActivity(intent);
             }
         };
         timer.start();
+
+
     }
     private void getContent(){
         PlayGame.DownloadContentTask task = new PlayGame.DownloadContentTask();
@@ -163,17 +182,19 @@ public class PlayGame extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%02d : %02d", minutes, seconds);
     }
 
-
     public void onClickAnswer(View view) {
         if (!gameOver) {
             Button button = (Button) view;
             String tag = button.getTag().toString();
             if (Integer.parseInt(tag) == numberOfRightAnswer) {
                 countOfRightAnswer++;
-                button.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-
+                Toast toast = Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
-                button.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                Toast toast = Toast.makeText(this, "Неверно. Правильный ответ: " + names.get(numberOfQuestion), Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
             countOfQuestions++;
             playGame();
@@ -182,7 +203,7 @@ public class PlayGame extends AppCompatActivity {
     private static class DownloadContentTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-            URL url = null;
+            URL url;
             HttpURLConnection urlConnection = null;
             StringBuilder result = new StringBuilder();
             try {
@@ -210,9 +231,8 @@ public class PlayGame extends AppCompatActivity {
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
         @Override
         protected Bitmap doInBackground(String... strings) {
-            URL url = null;
+            URL url;
             HttpURLConnection urlConnection = null;
-            StringBuilder result = new StringBuilder();
             try {
                 url = new URL(strings[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
