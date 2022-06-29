@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -163,17 +162,19 @@ public class PlayGame extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%02d : %02d", minutes, seconds);
     }
 
-
     public void onClickAnswer(View view) {
         if (!gameOver) {
             Button button = (Button) view;
             String tag = button.getTag().toString();
             if (Integer.parseInt(tag) == numberOfRightAnswer) {
                 countOfRightAnswer++;
-                button.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-
+                Toast toast = Toast.makeText(this, "Верно!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             } else {
-                button.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                Toast toast = Toast.makeText(this, "Неверно. Правильный ответ: " + names.get(numberOfQuestion), Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
             countOfQuestions++;
             playGame();
