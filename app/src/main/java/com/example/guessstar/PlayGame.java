@@ -163,6 +163,7 @@ public class PlayGame extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%02d : %02d", minutes, seconds);
     }
 
+
     public void onClickAnswer(View view) {
         if (!gameOver) {
             Button button = (Button) view;
