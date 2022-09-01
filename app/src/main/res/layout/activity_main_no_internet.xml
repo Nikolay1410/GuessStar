@@ -16,7 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/fon" />
+        app:srcCompat="@drawable/fon"
+        android:contentDescription="@string/title" />
 
     <ImageView
         android:id="@+id/imageViewDanger"
@@ -26,7 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/pngegg" />
+        app:srcCompat="@drawable/danger"
+        android:contentDescription="@string/titleDanger" />
 
     <TextView
         android:id="@+id/textView"
