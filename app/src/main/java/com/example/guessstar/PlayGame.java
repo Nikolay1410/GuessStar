@@ -1,5 +1,4 @@
 package com.example.guessstar;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -56,12 +55,12 @@ public class PlayGame extends AppCompatActivity {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
             exit = false;
-        } else
+        }
+        else
             Toast.makeText(getBaseContext(), "Если хотите выйти нажмите кнопку дважды",
                     Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +81,7 @@ public class PlayGame extends AppCompatActivity {
         names = new ArrayList<>();
         getContent();
         playGame();
+
         CountDownTimer timer = new CountDownTimer(60000, 1000) {
             @Override
             public void onTick(long l) {
@@ -108,10 +108,8 @@ public class PlayGame extends AppCompatActivity {
             }
         };
         timer.start();
-
-
     }
-    private void getContent(){
+    private void getContent() {
         PlayGame.DownloadContentTask task = new PlayGame.DownloadContentTask();
         try {
             String url = "https://forbes.kz//process/expertise/100_samyih_vliyatelnyih_znamenitostey_po_versii_forbes/";
@@ -142,7 +140,6 @@ public class PlayGame extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     private void playGame() {
         generateQuestions();
         PlayGame.DownloadImageTask task = new PlayGame.DownloadImageTask();
@@ -198,6 +195,7 @@ public class PlayGame extends AppCompatActivity {
             }
             countOfQuestions++;
             playGame();
+
         }
     }
     private static class DownloadContentTask extends AsyncTask<String, Void, String> {

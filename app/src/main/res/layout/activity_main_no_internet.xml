@@ -39,7 +39,7 @@
         android:textColor="@color/purple_700"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:text="Извените. Отсутствует соеденение с интернетом."
+        android:text="@string/offline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDanger" />

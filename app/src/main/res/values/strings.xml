@@ -8,4 +8,6 @@
     <string name="restart_game">Начть заново</string>
     <string name="title">title</string>
     <string name="titleDanger">titleDanger</string>
+    <string name="exit">Выйти</string>
+    <string name="offline">Извените. Отсутствует соеденение с интернетом.</string>
 </resources>
